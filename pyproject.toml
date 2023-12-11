@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "commentupdater"
+version = "0.1.0"
+description = ""
+authors = ["Ziyue Tan <201250093@smail.nju.edu.cn>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+langchain = "^0.0.348"
+
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
