@@ -1,11 +1,9 @@
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms import Ollama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
 llm = Ollama(
-    model="llama2", callback_manager=CallbackManager([StreamingStdOutCallbackHandler()])
+    model="llama2"
 )
 
 old_method = ('private String getSessionFileName(String sessionIdentifier , boolean createSessionFolder) {File '
@@ -23,12 +21,8 @@ New Method: ```{new_method}```
 
 Old Comment: ```{old_comment}```
 
-Please infer the new comment according to the code modification
-
-Requirement: 
-    1. No explanation. No natural words.
-    2. Perform the minimum modification
-    3. Avoid any lose of information
+Please infer the new comment according to the code modification.
+Rules: No explanation. No natural words. Perform the minimum modification Avoid any lose of information
 '''
 
 prompt = ChatPromptTemplate.from_template(source)
@@ -36,8 +30,10 @@ output_parser = StrOutputParser()
 
 chain = prompt | llm | output_parser
 
-chain.invoke({
+answer = chain.invoke({
     'new_method': new_method,
     'old_method': old_method,
     'old_comment': old_comment,
 })
+
+print(answer)
