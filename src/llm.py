@@ -9,8 +9,10 @@ New Method: ```{new_method}```
 
 Old Comment: ```{old_comment}```
 
-Please infer the new comment according to the code modification.
-Rules: No explanation. No natural words. Perform the minimum modification Avoid any lose of information
+Please infer the new comment according to the old method, the new method, and the old comment.
+Rules: No explanation. No natural words. Perform the minimum modification. Avoid any lose of information.
+
+Output format: New Comment: [Content]
 '''
 
 
