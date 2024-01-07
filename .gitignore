@@ -2,3 +2,6 @@
 /.vscode/
 
 .env
+
+/data/raw/
+/data/processed/
