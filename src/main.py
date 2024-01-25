@@ -1,5 +1,7 @@
+import datetime
 import json
 
+import jsonlines
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_community.llms.ollama import Ollama
@@ -42,29 +44,32 @@ class Model:
 
 
 myModel = Model('mistral-openorca')
-with open('../data/raw/test.jsonl', 'r') as f:
-    lines = f.readlines()
-    for nr_line in range(0, 2):
-        raw_json = lines[nr_line]
-        print(f"## Case {nr_line + 1}")
-        parsed = json.loads(raw_json)
-        _old_method = parsed['src_method']
-        _new_method = parsed['dst_method']
-        _old_comment = parsed['src_javadoc']
-        result = myModel.resolve(_old_method, _new_method, _old_comment)
-        # print(f"Old     : {_old_comment}")
-        # print(f"Expected: {parsed['dst_javadoc']}")
-        # print(f'Actual  : {result.strip()}')
-        # print()
-        output_dict = {
-            'sample_id': parsed['sample_id'],
-            'full_name': parsed['full_name'],
-            'commit_id': parsed['commit_id'],
-            'src_method': _old_method,
-            'dst_method': _new_method,
-            'src_javadoc': _old_comment,
-            'dst_javadoc': parsed['dst_javadoc'],
-            'act_javadoc': result.strip()
-        }
-        output_s = json.dumps(output_dict, indent=2)
-        print(output_s)
+
+NUM = 2
+nr_line = 0
+
+result_file_name = f'result-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
+with jsonlines.open('../data/raw/test.jsonl') as reader:
+    with jsonlines.open(f'../data/results/{result_file_name}', mode='w') as writer:
+        for parsed in reader:
+            if nr_line == NUM:
+                break
+            print(f"## Case {nr_line + 1}")
+            nr_line += 1
+            _old_method = parsed['src_method']
+            _new_method = parsed['dst_method']
+            _old_comment = parsed['src_javadoc']
+            result = myModel.resolve(_old_method, _new_method, _old_comment)
+            output_dict = {
+                'sample_id': parsed['sample_id'],
+                'full_name': parsed['full_name'],
+                'commit_id': parsed['commit_id'],
+                'src_method': _old_method,
+                'dst_method': _new_method,
+                'src_javadoc': _old_comment,
+                'dst_javadoc': parsed['dst_javadoc'],
+                'act_javadoc': result.strip()
+            }
+            output_s = json.dumps(output_dict, indent=2)
+            print(output_s)
+            writer.write(output_dict)

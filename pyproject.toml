@@ -10,6 +10,7 @@ python = "^3.11"
 langchain = "^0.0.350"
 python-dotenv = "^1.0.0"
 jupyter = "^1.0.0"
+jsonlines = "^4.0.0"
 
 
 [build-system]
