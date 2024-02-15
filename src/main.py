@@ -45,7 +45,7 @@ class Model:
 
 myModel = Model('mistral-openorca')
 
-NUM = 2
+NUM = 100
 nr_line = 0
 
 result_file_name = f'result-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
@@ -71,5 +71,5 @@ with jsonlines.open('../data/raw/test.jsonl') as reader:
                 'act_javadoc': result.strip()
             }
             output_s = json.dumps(output_dict, indent=2)
-            print(output_s)
+            # print(output_s)
             writer.write(output_dict)
