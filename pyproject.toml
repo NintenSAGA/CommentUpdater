@@ -12,6 +12,7 @@ python-dotenv = "^1.0.0"
 jupyter = "^1.0.0"
 jsonlines = "^4.0.0"
 rouge = "^1.0.1"
+scikit-learn = "^1.4.0"
 
 
 [build-system]
