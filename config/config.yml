@@ -1,0 +1,14 @@
+testData:
+  path: '../data/raw/test.jsonl'
+  num: 5
+  selected:
+#    - '5062276'
+#    - '2336970'
+#    - '3992375'
+#    - '440280'
+
+param:
+  sortOrder: ['rouge', 'cosine']
+  nr_gen: 10 # 每个问题的初始生成候选数
+  nr_cand1: 6 # 第一轮筛选后剩下的结果数
+  nr_cand: 3 # 最后保留的候选结果数

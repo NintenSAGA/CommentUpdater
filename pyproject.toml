@@ -13,6 +13,7 @@ jupyter = "^1.0.0"
 jsonlines = "^4.0.0"
 rouge = "^1.0.1"
 scikit-learn = "^1.4.0"
+pyyaml = "^6.0.1"
 
 
 [build-system]
