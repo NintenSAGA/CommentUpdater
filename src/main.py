@@ -80,17 +80,23 @@ def calc_and_filter(candidates, dst_method, src_javadoc, m, p):
     for _i, score in enumerate(scores):
         hyp = candidates[_i]
         recall = score['rouge-l']['r']
+        overall = score['rouge-l']['f']
         cs = cal_cosine_similarity(dst_method, hyp)
-        cand_tuples.append((hyp, recall, cs))
+        cand_tuples.append((hyp, recall, cs, overall))
 
+    cand_tuples = sorted(cand_tuples, key=lambda x: len(x[0]))
     cand_tuples = sorted(cand_tuples, key=lambda x: x[2], reverse=True)
-    cand_tuples = list(filter(lambda x: x[0] != src_javadoc, cand_tuples))
-    cand_tuples = cand_tuples[:min(m, len(cand_tuples))]
+    cand_tuples = list(filter(lambda x: x[3] < 0.99, cand_tuples))
+    # cand_tuples = cand_tuples[:min(m, len(cand_tuples))]
     cand_tuples = sorted(cand_tuples, key=lambda x: x[1], reverse=True)
     cand_tuples = cand_tuples[:min(len(cand_tuples), p)]
 
     for t in cand_tuples:
-        print(f'recall: {t[1]:.2f} cs: {t[2]:.2f} - {t[0]}')
+        print(f'recall: {t[1]:.2f} cs: {t[2]:.2f} f1: {t[3]: .2f} \n\t- {t[0]}')
+
+    if len(cand_tuples) == 0:
+        print('No candidates found')
+        return candidates[:min(len(candidates), p)]
 
     return list(map(lambda x: x[0], cand_tuples))
 
@@ -123,12 +129,12 @@ with jsonlines.open('../data/raw/test.jsonl') as reader:
             _n = 10
             _m = 5
             _p = 3
-            _candidates = []
+            _candidates = set()
             for i in range(_n):
                 result = myModel.resolve(_old_method, _new_method, _old_comment)
                 result = result.rstrip('<|im_end|>')
-                _candidates.append(result)
-            _n_candidates = calc_and_filter(_candidates, _new_method, _old_comment, _m, _p)
+                _candidates.add(result)
+            _n_candidates = calc_and_filter(list(_candidates), _new_method, _old_comment, _m, _p)
 
             # result = myModel.resolve(_old_method, _new_method, _old_comment)
             output_dict = {
