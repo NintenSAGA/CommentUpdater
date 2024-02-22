@@ -1,6 +1,6 @@
 testData:
   path: '../data/raw/test.jsonl'
-  num: 5
+  num: 2
   selected:
 #    - '5062276'
 #    - '2336970'

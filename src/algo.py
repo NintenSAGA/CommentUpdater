@@ -41,7 +41,6 @@ def calc_and_filter(candidates, dst_method, src_javadoc, params: dict):
         overall = score['rouge-l']['f']
         # 计算 Method Body 和 Comment 的 Cosine Similarity
         cs = cal_cosine_similarity(dst_method, hyp)
-        cand_tuples.append((hyp, recall, cs, overall))
         cand_tuples.append({
             'content': hyp,
             'recall': recall,
@@ -57,16 +56,16 @@ def calc_and_filter(candidates, dst_method, src_javadoc, params: dict):
     nr_cand1 = params['nr_cand1']
     cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand1 else cand_tuples[:nr_cand1]
     # 根据 Rouge Metric 降序排列，越靠前的与原注释越相似
-    cand_tuples = sorted(cand_tuples, key=lambda x: x[recall], reverse=True)
+    cand_tuples = sorted(cand_tuples, key=lambda x: x['recall'], reverse=True)
     # 保留前 nr_cand 位，其余淘汰
     nr_cand = params['nr_cand']
     cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand else cand_tuples[:nr_cand]
 
     for t in cand_tuples:
-        print(f'recall: {t[1]:.2f} cs: {t[2]:.2f} f1: {t[3]: .2f} \n\t- {t[0]}')
+        print(f'recall: {t["recall"]:.2f} cs: {t["cosine"]:.2f} f1: {t["overall"]: .2f} \n\t- {t["content"]}')
 
     if len(cand_tuples) == 0:
         print('No candidates found')
-        return candidates[:min(len(candidates), p)]
+        return candidates[:min(len(candidates), nr_cand)]
 
-    return list(map(lambda x: x[0], cand_tuples))
+    return list(map(lambda x: x['content'], cand_tuples))
