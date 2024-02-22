@@ -7,8 +7,7 @@ testData:
 #    - '3992375'
 #    - '440280'
 
-param:
-  sortOrder: ['rouge', 'cosine']
+params:
   nr_gen: 10 # 每个问题的初始生成候选数
   nr_cand1: 6 # 第一轮筛选后剩下的结果数
   nr_cand: 3 # 最后保留的候选结果数

@@ -30,7 +30,7 @@ def cal_cosine_similarity(text1, text2):
     return similarity
 
 
-def calc_and_filter(candidates, dst_method, src_javadoc, m, p):
+def calc_and_filter(candidates, dst_method, src_javadoc, params: dict):
     _rouge = rouge.Rouge()
     scores = _rouge.get_scores(hyps=candidates,
                                refs=[src_javadoc] * len(candidates))
@@ -39,15 +39,28 @@ def calc_and_filter(candidates, dst_method, src_javadoc, m, p):
         hyp = candidates[_i]
         recall = score['rouge-l']['r']
         overall = score['rouge-l']['f']
+        # 计算 Method Body 和 Comment 的 Cosine Similarity
         cs = cal_cosine_similarity(dst_method, hyp)
         cand_tuples.append((hyp, recall, cs, overall))
+        cand_tuples.append({
+            'content': hyp,
+            'recall': recall,
+            'cosine': cs,
+            'overall': overall
+        })
 
-    cand_tuples = sorted(cand_tuples, key=lambda x: len(x[0]))
-    cand_tuples = sorted(cand_tuples, key=lambda x: x[2], reverse=True)
-    cand_tuples = list(filter(lambda x: x[3] < 0.99, cand_tuples))
-    # cand_tuples = cand_tuples[:min(m, len(cand_tuples))]
-    cand_tuples = sorted(cand_tuples, key=lambda x: x[1], reverse=True)
-    cand_tuples = cand_tuples[:min(len(cand_tuples), p)]
+    # 筛除跟原注释完全一样的结果
+    cand_tuples = list(filter(lambda x: x['overall'] < 0.99, cand_tuples))
+    # 根据 Cosine Similarity 降序排列，越靠前的与方法本身越相关
+    cand_tuples = sorted(cand_tuples, key=lambda x: x['cosine'], reverse=True)
+    # 保留前 nr_cand1 位，其余淘汰
+    nr_cand1 = params['nr_cand1']
+    cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand1 else cand_tuples[:nr_cand1]
+    # 根据 Rouge Metric 降序排列，越靠前的与原注释越相似
+    cand_tuples = sorted(cand_tuples, key=lambda x: x[recall], reverse=True)
+    # 保留前 nr_cand 位，其余淘汰
+    nr_cand = params['nr_cand']
+    cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand else cand_tuples[:nr_cand]
 
     for t in cand_tuples:
         print(f'recall: {t[1]:.2f} cs: {t[2]:.2f} f1: {t[3]: .2f} \n\t- {t[0]}')

@@ -16,6 +16,7 @@ if __name__ == '__main__':
     with open((CONFIG_DIR / 'config.yml'), 'r') as file:
         config = yaml.safe_load(file)
     test_data = config['testData']
+    params = config['params']
 
     myModel = Model('mistral-openorca')
 
@@ -35,6 +36,7 @@ if __name__ == '__main__':
                         continue
                 elif nr_line == NUM:
                     break
+
                 print(f"## Case {nr_line + 1} (ID: {_sample_id})")
                 nr_line += 1
                 _old_method = parsed['src_method']
@@ -43,15 +45,14 @@ if __name__ == '__main__':
                 _exp_comment = parsed['dst_desc']
 
                 print(f'Expected: {_exp_comment}')
-                _n = 10
-                _m = 5
-                _p = 3
+
+                _n = params['nr_gen']
                 _candidates = set()
                 for i in range(_n):
                     result = myModel.resolve(_old_method, _new_method, _old_comment)
                     result = result.rstrip('<|im_end|>')
                     _candidates.add(result)
-                _n_candidates = calc_and_filter(list(_candidates), _new_method, _old_comment, _m, _p)
+                _n_candidates = calc_and_filter(list(_candidates), _new_method, _old_comment, params)
 
                 # result = myModel.resolve(_old_method, _new_method, _old_comment)
                 output_dict = {
