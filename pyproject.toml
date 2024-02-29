@@ -18,6 +18,7 @@ beautifulsoup4 = "^4.12.3"
 faiss-cpu = "^1.7.4"
 chromadb = "^0.4.24"
 langchainhub = "^0.1.14"
+matplotlib = "^3.8.3"
 
 
 [build-system]

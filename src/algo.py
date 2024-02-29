@@ -43,7 +43,7 @@ def calc_rouge_l(hyp_list: list[str], ref: str):
     )
 
 
-def calc_and_filter(candidates, dst_method, src_javadoc, params: dict, exp_javadoc=None):
+def calc_and_filter(candidates, dst_method, src_javadoc, params: dict, exp_javadoc=None, silent=False):
     rouge_result = calc_rouge_l(candidates, src_javadoc)
     cand_tuples = []
 
@@ -80,13 +80,15 @@ def calc_and_filter(candidates, dst_method, src_javadoc, params: dict, exp_javad
     nr_cand = params['nr_cand']
     cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand else cand_tuples[:nr_cand]
 
-    for t in cand_tuples:
-        print(f'''❇️ recall: {t["recall"]:.2f} cs: {t["cosine"]:.2f} f1: {t["overall"]: .2f}
+    if not silent:
+        for t in cand_tuples:
+            print(f'''❇️ recall: {t["recall"]:.2f} cs: {t["cosine"]:.2f} f1: {t["overall"]: .2f}
 ❇️ accuracy: {t["accuracy"]:.2f}
 🛑 - {t["content"]}''')
 
     if len(cand_tuples) == 0:
-        print('No candidates found')
+        if not silent:
+            print('No candidates found')
         return candidates[:min(len(candidates), nr_cand)]
 
     return list(map(lambda x: x['content'], cand_tuples))
