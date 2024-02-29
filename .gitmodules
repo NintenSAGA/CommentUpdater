@@ -1,0 +1,3 @@
+[submodule "submodules/jlex"]
+	path = submodules/jlex
+	url = https://github.com/Rabrg/jlex.git

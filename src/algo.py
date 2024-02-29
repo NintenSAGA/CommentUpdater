@@ -1,5 +1,6 @@
 import difflib
 
+import javalang
 import rouge
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -41,6 +42,15 @@ def calc_rouge_l(hyp_list: list[str], ref: str):
         },
             scores)
     )
+
+
+def get_identifier_set(method_body):
+    tokens = list(javalang.tokenizer.tokenize(method_body))
+    identifier_set = set()
+    for token in tokens:
+        if type(token) is javalang.tokenizer.Identifier:
+            identifier_set.add(token.value)
+    return identifier_set
 
 
 def calc_and_filter(candidates, dst_method, src_javadoc, params: dict, exp_javadoc=None, silent=False):

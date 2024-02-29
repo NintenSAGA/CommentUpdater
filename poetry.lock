@@ -1633,6 +1633,21 @@ files = [
 arrow = ">=0.15.0"
 
 [[package]]
+name = "javalang"
+version = "0.13.0"
+description = "Pure Python Java parser and tools"
+optional = false
+python-versions = "*"
+files = [
+    {file = "javalang-0.13.0-py2-none-any.whl", hash = "sha256:5c20f9ee81c49062341e78a88485d6a16f2fa7282856fecf79d2a9dc32374cca"},
+    {file = "javalang-0.13.0-py3-none-any.whl", hash = "sha256:b203c258919b085b44b43b89effcba7291bb2d90c02906b915b39e86aa9fd8e6"},
+    {file = "javalang-0.13.0.tar.gz", hash = "sha256:1681a5a480a58116d42a7eedfd132abe25e6c0ffe552868d581ad84e6aa3424c"},
+]
+
+[package.dependencies]
+six = "*"
+
+[[package]]
 name = "jedi"
 version = "0.19.1"
 description = "An autocompletion tool for Python that can be used for text editors."
@@ -5342,4 +5357,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "e4cdc49601797997af06be9baf7912f1843d340c7772fa17617d797902f352a3"
+content-hash = "fa1791e8e3d85e8719d77757d7ddd7ceb84150997e30760562073bf68c06682c"

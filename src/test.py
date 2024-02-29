@@ -1,25 +1,21 @@
-from operator import itemgetter
+import javalang
+import jsonlines
+from javalang.parser import JavaSyntaxError
 
-from langchain.schema import StrOutputParser
-from langchain_community.llms.ollama import Ollama
-from langchain_core.prompts import ChatPromptTemplate
+from algo import get_identifier_set
 
-prompt1 = ChatPromptTemplate.from_template("what is the city {person} is from?")
-prompt2 = ChatPromptTemplate.from_template(
-    "what country is the city {city} in? respond in {language}"
-)
+path = '../data/raw/test.jsonl'
 
-model = Ollama(model='llama2')
+line_cnt = 0
+with jsonlines.open(path) as reader:
+    for parsed in reader:
+        line_cnt += 1
+        old_method = parsed['src_method']
+        new_method = parsed['dst_method']
+        src_desc = parsed['src_desc']
+        dst_desc = parsed['dst_desc']
 
-chain1 = prompt1 | model | StrOutputParser()
+        s = get_identifier_set(new_method)
+        print(' '.join(s))
 
-chain2 = (
-    {"city": chain1, "language": itemgetter("language")}
-    | prompt2
-    | model
-    | StrOutputParser()
-)
-
-answer = chain2.invoke({"person": "obama", "language": "spanish"})
-
-print('answer: ' + answer)
+        exit(1)
