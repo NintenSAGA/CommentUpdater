@@ -30,22 +30,40 @@ def cal_cosine_similarity(text1, text2):
     return similarity
 
 
-def calc_and_filter(candidates, dst_method, src_javadoc, params: dict):
-    _rouge = rouge.Rouge()
-    scores = _rouge.get_scores(hyps=candidates,
-                               refs=[src_javadoc] * len(candidates))
+def calc_rouge_l(hyp_list: list[str], ref: str):
+    r = rouge.Rouge()
+    scores = r.get_scores(hyps=hyp_list, refs=[ref] * len(hyp_list))
+    return list(
+        map(lambda score: {
+            'recall': score['rouge-l']['r'],
+            'precision': score['rouge-l']['p'],
+            'f1': score['rouge-l']['f'],
+        },
+            scores)
+    )
+
+
+def calc_and_filter(candidates, dst_method, src_javadoc, params: dict, exp_javadoc=None):
+    rouge_result = calc_rouge_l(candidates, src_javadoc)
     cand_tuples = []
-    for _i, score in enumerate(scores):
-        hyp = candidates[_i]
-        recall = score['rouge-l']['r']
-        overall = score['rouge-l']['f']
+
+    for i, rouge_element in enumerate(rouge_result):
+        hyp = candidates[i]
         # 计算 Method Body 和 Comment 的 Cosine Similarity
         cs = cal_cosine_similarity(dst_method, hyp)
+        # 如果有预期结果，计算结果准确度
+        accuracy = -1
+        if exp_javadoc is not None:
+            r = calc_rouge_l([hyp], exp_javadoc)[0]
+            accuracy = r['recall']
+
         cand_tuples.append({
             'content': hyp,
-            'recall': recall,
+            'recall': rouge_element['recall'],
+            'precision': rouge_element['precision'],
+            'overall': rouge_element['f1'],
             'cosine': cs,
-            'overall': overall
+            'accuracy': accuracy
         })
 
     # 筛除跟原注释完全一样的结果
@@ -56,13 +74,16 @@ def calc_and_filter(candidates, dst_method, src_javadoc, params: dict):
     nr_cand1 = params['nr_cand1']
     cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand1 else cand_tuples[:nr_cand1]
     # 根据 Rouge Metric 降序排列，越靠前的与原注释越相似
-    cand_tuples = sorted(cand_tuples, key=lambda x: x['recall'], reverse=True)
+    # cand_tuples = sorted(cand_tuples, key=lambda x: x['recall'], reverse=True)
+    cand_tuples = sorted(cand_tuples, key=lambda x: x['overall'], reverse=True)
     # 保留前 nr_cand 位，其余淘汰
     nr_cand = params['nr_cand']
     cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand else cand_tuples[:nr_cand]
 
     for t in cand_tuples:
-        print(f'recall: {t["recall"]:.2f} cs: {t["cosine"]:.2f} f1: {t["overall"]: .2f} \n\t- {t["content"]}')
+        print(f'''❇️ recall: {t["recall"]:.2f} cs: {t["cosine"]:.2f} f1: {t["overall"]: .2f}
+❇️ accuracy: {t["accuracy"]:.2f}
+🛑 - {t["content"]}''')
 
     if len(cand_tuples) == 0:
         print('No candidates found')

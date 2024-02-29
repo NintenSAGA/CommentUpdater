@@ -2,15 +2,17 @@ import datetime
 import json
 import pathlib
 
-import yaml
-
 import jsonlines
+import yaml
 
 from algo import calc_and_filter
 from llm import Model
+from dotenv import load_dotenv
 
 WORK_DIR = pathlib.Path(__file__).parent.parent.resolve()
 CONFIG_DIR = WORK_DIR / 'config'
+
+load_dotenv()
 
 if __name__ == '__main__':
     with open((CONFIG_DIR / 'config.yml'), 'r') as file:
@@ -18,7 +20,8 @@ if __name__ == '__main__':
     test_data = config['testData']
     params = config['params']
 
-    myModel = Model('mistral-openorca')
+    # myModel = Model('mistral-openorca')
+    myModel = Model('dolphin-mistral')
 
     NUM = test_data['num']
     SELECTED = test_data['selected']
@@ -37,14 +40,16 @@ if __name__ == '__main__':
                 elif nr_line == NUM:
                     break
 
-                print(f"## Case {nr_line + 1} (ID: {_sample_id})")
+                print(f"\n## Case {nr_line + 1} (ID: {_sample_id})")
+
                 nr_line += 1
                 _old_method = parsed['src_method']
                 _new_method = parsed['dst_method']
                 _old_comment = parsed['src_desc']
                 _exp_comment = parsed['dst_desc']
 
-                print(f'Expected: {_exp_comment}')
+                print(f'1️⃣Original: {_old_comment}')
+                print(f'1️⃣Expected: {_exp_comment}')
 
                 _n = params['nr_gen']
                 _candidates = set()
@@ -52,7 +57,7 @@ if __name__ == '__main__':
                     result = myModel.resolve(_old_method, _new_method, _old_comment)
                     result = result.rstrip('<|im_end|>')
                     _candidates.add(result)
-                _n_candidates = calc_and_filter(list(_candidates), _new_method, _old_comment, params)
+                _n_candidates = calc_and_filter(list(_candidates), _new_method, _old_comment, params, _exp_comment)
 
                 # result = myModel.resolve(_old_method, _new_method, _old_comment)
                 output_dict = {
