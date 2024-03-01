@@ -21,7 +21,7 @@ if __name__ == '__main__':
     params = config['params']
 
     # myModel = Model('mistral-openorca')
-    myModel = Model('dolphin-mistral')
+    myModel = Model(config['model'])
 
     NUM = test_data['num']
     SELECTED = test_data['selected']
@@ -57,7 +57,7 @@ if __name__ == '__main__':
                     result = myModel.resolve(_old_method, _new_method, _old_comment)
                     result = result.rstrip('<|im_end|>')
                     _candidates.add(result)
-                _n_candidates = calc_and_filter(list(_candidates), _new_method, _old_comment, params, _exp_comment)
+                _n_candidates = calc_and_filter(list(_candidates), _old_method, _new_method, _old_comment, params, _exp_comment)
 
                 # result = myModel.resolve(_old_method, _new_method, _old_comment)
                 output_dict = {

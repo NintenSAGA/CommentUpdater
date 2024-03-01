@@ -1,8 +1,11 @@
+#model: 'gemma:7b'
+model: 'dolphin-mistral:latest'
+
 testData:
   path: '../data/raw/test.jsonl'
-  num: 20
+  num: 5
   selected:
-    - 5062276
+#    - 5062276
 #    - 2336970
 #    - 3992375
 #    - 440280

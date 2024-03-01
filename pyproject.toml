@@ -20,6 +20,8 @@ chromadb = "^0.4.24"
 langchainhub = "^0.1.14"
 matplotlib = "^3.8.3"
 javalang = "^0.13.0"
+openai = "^1.13.3"
+httpx = {extras = ["socks"], version = "^0.27.0"}
 
 
 [build-system]
