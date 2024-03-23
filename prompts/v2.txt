@@ -12,18 +12,21 @@ The original code comment is as follows:
 ```{old_comment}```
 
 Please update the original code comment to fit the new method.
-If no modification can be performed, try to examine the following aspects:
-- Is the original comment totally correct? If no, fix it.
-- Does the original comment contains typos (e.g. ascii -> ASCII, cachediff -> CacheDiff, scake -> scale)? If yes, fix it.
 
 Please note:
 - Write out your answer directly, without any further explanation of analysis.
 - The fewer changes to the original comment, the better.
+- Pay special attention to the changes related to method signature and variable name.
+- If no modification can be performed, try to examine the following aspects:
+    - Is the original comment totally correct? If no, fix it.
+    - Does the original comment contains typos (e.g. ascii -> ASCII, cachediff -> CacheDiff, scake -> scale)? If yes, fix it.
 
-Example:
-- Original code: ```public int build(int n) {{ return n + 8; }}```
-- Modified code: ```public void build(int n) {{ this.val = n + 8; }}```
-- Original comment: ```Build the initial value by adding 8 to n.```
-- Updated comment: ```Set the initial value by adding 8 to n.```
+Example 1:
+- Original comment: Build the initial value by adding 8 to n.
+- Updated comment: Set the initial value by adding 8 to n.
+
+Example 2:
+- Original comment: The red fox jumps over the lazy dog
+- Updated comment: The black fox jumps over the lazy dog
 
 {format_instructions}

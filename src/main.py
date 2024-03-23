@@ -31,46 +31,46 @@ if __name__ == '__main__':
 
     result_file_name = f'result-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
     with jsonlines.open(PATH) as reader:
-        with jsonlines.open(f'../data/results/{result_file_name}', mode='w') as writer:
-            for parsed in reader:
-                _sample_id = parsed['sample_id']
-                if SELECTED is not None and len(SELECTED) != 0:
-                    if _sample_id not in SELECTED:
-                        continue
-                elif nr_line == NUM:
-                    break
+        # with jsonlines.open(f'../data/results/{result_file_name}', mode='w') as writer:
+        for parsed in reader:
+            _sample_id = parsed['sample_id']
+            if SELECTED is not None and len(SELECTED) != 0:
+                if _sample_id not in SELECTED:
+                    continue
+            elif nr_line == NUM:
+                break
 
-                print(f"\n## Case {nr_line + 1} (ID: {_sample_id})")
+            print(f"\n## Case {nr_line + 1} (ID: {_sample_id})")
 
-                nr_line += 1
-                _old_method = parsed['src_method']
-                _new_method = parsed['dst_method']
-                _old_comment = parsed['src_desc']
-                _exp_comment = parsed['dst_desc']
+            nr_line += 1
+            _old_method = parsed['src_method']
+            _new_method = parsed['dst_method']
+            _old_comment = parsed['src_desc']
+            _exp_comment = parsed['dst_desc']
 
-                print(f'1️⃣Original: {_old_comment}')
-                print(f'1️⃣Expected: {_exp_comment}')
+            print(f'1️⃣Original: {_old_comment}')
+            print(f'1️⃣Expected: {_exp_comment}')
 
-                _n = params['nr_gen']
-                _candidates = set()
-                for i in range(_n):
-                    result = myModel.resolve(_old_method, _new_method, _old_comment)
-                    result = result.rstrip('<|im_end|>')
-                    _candidates.add(result)
-                _n_candidates = calc_and_filter(list(_candidates), _old_method, _new_method, _old_comment, params, _exp_comment)
+            _n = params['nr_gen']
+            _candidates = set()
+            for i in range(_n):
+                result = myModel.resolve(_old_method, _new_method, _old_comment)
+                result = result.rstrip('<|im_end|>')
+                _candidates.add(result)
+            _n_candidates = calc_and_filter(list(_candidates), _old_method, _new_method, _old_comment, params, _exp_comment)
 
-                # result = myModel.resolve(_old_method, _new_method, _old_comment)
-                output_dict = {
-                    'sample_id': parsed['sample_id'],
-                    'full_name': parsed['full_name'],
-                    'commit_id': parsed['commit_id'],
-                    'src_method': _old_method,
-                    'dst_method': _new_method,
-                    'src_desc': _old_comment,
-                    'dst_desc': _exp_comment,
-                    # 'act_javadoc': result.strip()
-                    'act_desc': _n_candidates
-                }
-                output_s = json.dumps(output_dict, indent=2)
-                # print(output_s)
-                writer.write(output_dict)
+            # result = myModel.resolve(_old_method, _new_method, _old_comment)
+            output_dict = {
+                'sample_id': parsed['sample_id'],
+                'full_name': parsed['full_name'],
+                'commit_id': parsed['commit_id'],
+                'src_method': _old_method,
+                'dst_method': _new_method,
+                'src_desc': _old_comment,
+                'dst_desc': _exp_comment,
+                # 'act_javadoc': result.strip()
+                'act_desc': _n_candidates
+            }
+            # output_s = json.dumps(output_dict, indent=2)
+            # print(output_s)
+            # writer.write(output_dict)
