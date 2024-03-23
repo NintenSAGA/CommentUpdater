@@ -20,7 +20,7 @@ class Model:
         self.output_parser = StructuredOutputParser.from_response_schemas(self.response_schemas)
         self.format_instructions = self.output_parser.get_format_instructions()
 
-        with open(PROMPTS_DIR / 'v1.txt', 'r') as f:
+        with open(PROMPTS_DIR / 'v2.txt', 'r') as f:
             template = os.linesep.join(f.readlines())
 
         self.prompt = PromptTemplate(

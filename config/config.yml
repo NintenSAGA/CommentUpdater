@@ -1,10 +1,11 @@
 #model: 'gemma:7b'
 #model: 'dolphin-mistral:latest'
-model: 'mistral-openorca:latest'
+#model: 'mistral-openorca:latest'
+model: 'mistral:instruct'
 
 testData:
   path: '../data/raw/test.jsonl'
-  num: 10
+  num: 5
   selected:
 #    - 5062276
 #    - 2336970
