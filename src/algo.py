@@ -116,8 +116,8 @@ def calc_and_filter(candidates, src_method, dst_method, src_javadoc, params: dic
 
     # 筛除跟原注释完全一样的结果
     cand_tuples = list(filter(lambda x: x['overall'] < 0.99, cand_tuples))
-    # # 根据 Cosine Similarity 降序排列，越靠前的与方法本身越相关
-    # cand_tuples = sorted(cand_tuples, key=lambda x: x['cosine'], reverse=True)
+    # # 根据 Cosine Similarity 降序排列
+    # cand_tuples = sorted(cand_tuples, key=lambda x: x['cosine'], reverse=False)
     # # 保留前 nr_cand1 位，其余淘汰
     # nr_cand1 = params['nr_cand1']
     # cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand1 else cand_tuples[:nr_cand1]

@@ -1,0 +1,6 @@
+Read the following Java method: ```{old_method}```
+Read the following javadoc comment belonging to the method mentioned before: {old_comment}
+Then the Java method was modified to ```{new_method}```
+Please change the comment to fit the new method.
+The fewer changes, the better. Answer the comment only.
+{format_instructions}

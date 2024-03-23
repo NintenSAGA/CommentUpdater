@@ -1,0 +1,25 @@
+Task: You are a Java developer tasked with updating a javadoc comment to reflect changes in a Java method.
+Please repeat the prompt back as you understand it.
+Specifics:
+1. Review the original Java method and its associated javadoc comment.
+2. Examine the modifications made to the Java method.
+3. Update the javadoc comment to accurately reflect the changes in the method.
+4. Aim for minimal changes to the comment, maintaining clarity and accuracy.
+Output Requirements:
+1. Answer the modified comment only.
+2. Do not explain anything.
+3. Do not say any greetings.
+{format_instructions}
+---
+Original java method:
+```java
+{old_method}
+```
+---
+Original javadoc comment:
+{old_comment}
+---
+Modified java method:
+```java
+{new_method}
+```

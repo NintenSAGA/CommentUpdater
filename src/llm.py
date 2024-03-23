@@ -1,8 +1,14 @@
+import os
+import pathlib
+
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 from langchain_community.llms.ollama import Ollama
 from langchain_core.exceptions import OutputParserException
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
+
+WORK_DIR = pathlib.Path(__file__).parent.parent.resolve()
+PROMPTS_DIR = WORK_DIR / 'prompts'
 
 
 class Model:
@@ -13,15 +19,12 @@ class Model:
         ]
         self.output_parser = StructuredOutputParser.from_response_schemas(self.response_schemas)
         self.format_instructions = self.output_parser.get_format_instructions()
+
+        with open(PROMPTS_DIR / 'v1.txt', 'r') as f:
+            template = os.linesep.join(f.readlines())
+
         self.prompt = PromptTemplate(
-            template=
-            '''
-            Read the following Java method: ```{old_method}```
-            Read the following javadoc comment belonging to the method mentioned before: {old_comment}
-            Then the Java method was modified to ```{new_method}```
-            Please change the comment to fit the new method. 
-            The fewer changes, the better. Answer the comment only.
-            {format_instructions}''',
+            template=template,
             input_variables=["old_method", "old_comment", "new_method"],
             partial_variables={"format_instructions": ''},
         )
