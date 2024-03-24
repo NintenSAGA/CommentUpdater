@@ -7,15 +7,9 @@ testData:
   path: 'data/raw/test.jsonl'
   num: 10
   selected:
-##    - 5062276
-#    - 3992375 # updateVersion
-#    - 4708521 # cacheDiff
-##    - 440280
     # 代码变更无法提现注释变更
     - 6017988
     - 2248673
-    # 术语修正
-    - 5724303
     ## 论文：CUP
     - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )
     - 4233657 # private String getSessionFileName
@@ -23,13 +17,44 @@ testData:
     - 111342 # alkacon/opencms-core
     - 235252 # Alluxio/alluxio
     ## 摘选测试组
+    ### Typo
+    - 5176405
     - 6019740
+    - 5629914
+    - 5629994
+    - 570076
+    - 6017988
+    - 5176405
+    - 5724303
+    - 5452330
+    - 2337369
+    ### Normal
     - 5075805
     - 668963
     - 2217833
-    - 4708521
+    - 4708521 # cacheDiff
     - 339279
-    - 5629914
+    - 2996629
+    - 3992375 # updateVersion
+    - 5455336
+    - 5062276
+    - 1922872
+    - 3037028
+    - 4396494
+    - 3676014
+    - 2050129
+    - 6190739
+    - 440280
+    - 113779
+    - 4474377
+    - 6192460
+    - 3083929
+    - 3242255
+    - 5218897
+    ### Removed TODO
+    - 6165700
+    ### Better than ground truth
+    - 4617099
 
 params:
   nr_gen: 5 # 每个问题的初始生成候选数
