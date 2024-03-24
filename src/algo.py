@@ -115,7 +115,7 @@ def calc_and_filter(candidates, src_method, dst_method, src_javadoc, params: dic
         })
 
     # 筛除跟原注释完全一样的结果
-    cand_tuples = list(filter(lambda x: x['overall'] < 0.99, cand_tuples))
+    # cand_tuples = list(filter(lambda x: x['overall'] < 0.99, cand_tuples))
 
     # # 根据 Cosine Similarity 降序排列
     # cand_tuples = sorted(cand_tuples, key=lambda x: x['cosine'], reverse=False)
@@ -126,10 +126,10 @@ def calc_and_filter(candidates, src_method, dst_method, src_javadoc, params: dic
 
     # 根据 Rouge Metric 降序排列，越靠前的与原注释越相似
     # cand_tuples = sorted(cand_tuples, key=lambda x: x['recall'], reverse=True)
-    cand_tuples = sorted(cand_tuples, key=lambda x: x['overall'], reverse=True)
+    # cand_tuples = sorted(cand_tuples, key=lambda x: x['overall'], reverse=True)
     # 保留前 nr_cand 位，其余淘汰
     nr_cand = params['nr_cand']
-    cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand else cand_tuples[:nr_cand]
+    # cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand else cand_tuples[:nr_cand]
 
     if not silent:
         for t in cand_tuples:

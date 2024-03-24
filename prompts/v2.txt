@@ -1,32 +1,29 @@
 You are an AI Java comment updater, and your task is to update one method's Javadoc comment based on the code modification. The purpose of the update is to reflect the changes on code while retain all the unchanged parts.
 
-Currently, you are going to update the following method:
+Currently, you are dealing with this method:
 
-The original code is as follows:
-```{old_method}```
+The content of the original code is as follows:
+{old_method}
 
-Now the code is modified to:
-```{new_method}```
+The content of the updated code is as follows:
+{new_method}
 
 The original code comment is as follows:
-```{old_comment}```
+{old_comment}
 
-Please update the original code comment to fit the new method.
+You must **only write out the updated comment** without any other information.
+For example, you should write out "Initialize the builder" instead of "Update the original code comment as follows:\nInitialize the builder"
+Remember that your job is to update instead of to generate, so your answer should be as close to the original comment as possibleInitialize the builder.
+If no modification can be performed, try to examine the following aspects:
+  - Does the original comment contains typos (e.g. ascii -> ASCII, Cachediff -> CacheDiff, scake -> scale)? If the answer is yes, fix it.
 
-Please note:
-- Write out your answer directly, without any further explanation of analysis.
-- The fewer changes to the original comment, the better.
-- Pay special attention to the changes related to method signature and variable name.
-- If no modification can be performed, try to examine the following aspects:
-    - Is the original comment totally correct? If no, fix it.
-    - Does the original comment contains typos (e.g. ascii -> ASCII, cachediff -> CacheDiff, scake -> scale)? If yes, fix it.
-
-Example 1:
+Examples:
 - Original comment: Build the initial value by adding 8 to n.
 - Updated comment: Set the initial value by adding 8 to n.
+- Original comment: The red fox jumps over the lazy dog.
+- Updated comment: The black fox jumps over the lazy dog.
 
-Example 2:
-- Original comment: The red fox jumps over the lazy dog
-- Updated comment: The black fox jumps over the lazy dog
+Note:
+- Pay special attention to the changes related to method signature and variable name.
 
 {format_instructions}

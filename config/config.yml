@@ -1,22 +1,37 @@
 #model: 'gemma:7b'
 #model: 'dolphin-mistral:latest'
-#model: 'mistral-openorca:latest'
-model: 'mistral:instruct'
+model: 'mistral-openorca:latest'
+#model: 'mistral:instruct'
 
 testData:
-  path: '../data/raw/test.jsonl'
-  num: 5
+  path: 'data/raw/test.jsonl'
+  num: 10
   selected:
-    - 5062276
-    - 3992375
-    - 440280
-  # 代码变更无法提现注释变更
+##    - 5062276
+#    - 3992375 # updateVersion
+#    - 4708521 # cacheDiff
+##    - 440280
+    # 代码变更无法提现注释变更
     - 6017988
     - 2248673
-  # 术语修正
+    # 术语修正
     - 5724303
+    ## 论文：CUP
+    - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )
+    - 4233657 # private String getSessionFileName
+    ## 论文：HatCUP
+    - 111342 # alkacon/opencms-core
+    - 235252 # Alluxio/alluxio
+    ## 摘选测试组
+    - 6019740
+    - 5075805
+    - 668963
+    - 2217833
+    - 4708521
+    - 339279
+    - 5629914
 
 params:
-  nr_gen: 6 # 每个问题的初始生成候选数
-  nr_cand1: 6 # 第一轮筛选后剩下的结果数
-  nr_cand: 3 # 最后保留的候选结果数
+  nr_gen: 5 # 每个问题的初始生成候选数
+  nr_cand1: 5 # 第一轮筛选后剩下的结果数
+  nr_cand: 5 # 最后保留的候选结果数

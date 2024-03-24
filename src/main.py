@@ -21,11 +21,14 @@ if __name__ == '__main__':
     params = config['params']
 
     # myModel = Model('mistral-openorca')
-    myModel = Model(config['model'])
+    model_name = config['model']
+    myModel = Model(model_name)
+    print(f'Model: {model_name}')
 
     NUM = test_data['num']
     SELECTED = test_data['selected']
     PATH = test_data['path']
+    PATH = WORK_DIR / PATH
 
     nr_line = 0
 
@@ -45,8 +48,8 @@ if __name__ == '__main__':
             nr_line += 1
             _old_method = parsed['src_method']
             _new_method = parsed['dst_method']
-            _old_comment = parsed['src_desc']
-            _exp_comment = parsed['dst_desc']
+            _old_comment = parsed['src_javadoc']
+            _exp_comment = parsed['dst_javadoc']
 
             print(f'1️⃣Original: {_old_comment}')
             print(f'1️⃣Expected: {_exp_comment}')
