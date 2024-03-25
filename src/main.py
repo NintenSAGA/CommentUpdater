@@ -48,8 +48,8 @@ if __name__ == '__main__':
             nr_line += 1
             _old_method = parsed['src_method']
             _new_method = parsed['dst_method']
-            _old_comment = parsed['src_javadoc']
-            _exp_comment = parsed['dst_javadoc']
+            _old_comment = parsed['src_desc']
+            _exp_comment = parsed['dst_desc']
 
             print(f'1️⃣Original: {_old_comment}')
             print(f'1️⃣Expected: {_exp_comment}')
@@ -60,9 +60,15 @@ if __name__ == '__main__':
                 result = myModel.resolve(_old_method, _new_method, _old_comment)
                 result = result.rstrip('<|im_end|>')
                 _candidates.add(result)
-            _n_candidates = calc_and_filter(list(_candidates), _old_method, _new_method, _old_comment, params, _exp_comment)
+            _n_candidates = calc_and_filter(
+                candidates=list(_candidates), src_javadoc=_old_comment, params=params, exp_javadoc=_exp_comment)
 
-            # result = myModel.resolve(_old_method, _new_method, _old_comment)
+            for cand in _n_candidates:
+                print(f'''
+🔸ED: {cand['ed']:.2f} 🔸RED: {cand['red']:.3f} 🔸GLEU: {cand['gleu']:.1f} 🔸METEOR: {cand['meteor']:.1f}
+🔹{cand['content']}
+                ''')
+
             output_dict = {
                 'sample_id': parsed['sample_id'],
                 'full_name': parsed['full_name'],
@@ -71,9 +77,4 @@ if __name__ == '__main__':
                 'dst_method': _new_method,
                 'src_desc': _old_comment,
                 'dst_desc': _exp_comment,
-                # 'act_javadoc': result.strip()
-                'act_desc': _n_candidates
             }
-            # output_s = json.dumps(output_dict, indent=2)
-            # print(output_s)
-            # writer.write(output_dict)

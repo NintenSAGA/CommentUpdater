@@ -11,13 +11,12 @@ The content of the updated code is as follows:
 The original code comment is as follows:
 {old_comment}
 
-You must **only write out the updated comment** without any other information.
-For example, you should write out "Initialize the builder" instead of "Update the original code comment as follows:\nInitialize the builder"
-Remember that your job is to update instead of to generate, so your answer should be as close to the original comment as possibleInitialize the builder.
+Please write out the updated comment directly without any other information.
+Remember that your job is to update instead of to generate, so your answer should be as close to the original comment as possible.
 If no modification can be performed, try to examine the following aspects:
-  - Does the original comment contains typos (e.g. ascii -> ASCII, Cachediff -> CacheDiff, scake -> scale)? If the answer is yes, fix it.
+  - Fix the typos in the original comments (e.g. ascii -> ASCII, Cachediff -> CacheDiff, scake -> scale).
 
-Examples:
+For example:
 - Original comment: Build the initial value by adding 8 to n.
 - Updated comment: Set the initial value by adding 8 to n.
 - Original comment: The red fox jumps over the lazy dog.

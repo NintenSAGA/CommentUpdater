@@ -2,9 +2,11 @@ import difflib
 import re
 
 import javalang
+import nltk.translate.gleu_score
 import rouge
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from nltk.metrics import edit_distance
 
 
 def calculate_diff(original: str, updated: str):
@@ -91,55 +93,22 @@ def calculate_coverage_ratio(word_set, sentence):
     return coverage_ratio
 
 
-def calc_and_filter(candidates, src_method, dst_method, src_javadoc, params: dict, exp_javadoc=None, silent=False):
-    rouge_result = calc_rouge_l(candidates, src_javadoc)
+def calc_and_filter(candidates, src_javadoc, params: dict, exp_javadoc=None, silent=False):
     cand_tuples = []
-
-    for i, rouge_element in enumerate(rouge_result):
-        hyp = candidates[i]
-        # 计算 Method Body 和 Comment 的 Cosine Similarity
-        cs = cal_cosine_similarity(hyp, dst_method)
-        # 如果有预期结果，计算结果准确度
-        accuracy = -1
-        if exp_javadoc is not None:
-            r = calc_rouge_l([hyp], exp_javadoc)[0]
-            accuracy = r['recall']
-
-        cand_tuples.append({
+    for hyp in candidates:
+        data = {
             'content': hyp,
-            'recall': rouge_element['recall'],
-            'precision': rouge_element['precision'],
-            'overall': rouge_element['f1'],
-            'cosine': cs,
-            'accuracy': accuracy
-        })
+        }
+        if exp_javadoc is not None:
+            # Edit distance
+            data['ed'] = edit_distance(exp_javadoc.split(), hyp.split())
+            # Relative edit distance
+            data['red'] = data['ed'] / edit_distance(exp_javadoc.split(), src_javadoc.split())
+            # GLEU metric
+            data['gleu'] = 100 * nltk.translate.gleu_score.sentence_gleu([exp_javadoc.split()], hyp.split())
+            # METEOR metric
+            data['meteor'] = 100 * nltk.translate.meteor_score.single_meteor_score(exp_javadoc.split(), hyp.split())
 
-    # 筛除跟原注释完全一样的结果
-    # cand_tuples = list(filter(lambda x: x['overall'] < 0.99, cand_tuples))
+        cand_tuples.append(data)
 
-    # # 根据 Cosine Similarity 降序排列
-    # cand_tuples = sorted(cand_tuples, key=lambda x: x['cosine'], reverse=False)
-
-    # # 保留前 nr_cand1 位，其余淘汰
-    # nr_cand1 = params['nr_cand1']
-    # cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand1 else cand_tuples[:nr_cand1]
-
-    # 根据 Rouge Metric 降序排列，越靠前的与原注释越相似
-    # cand_tuples = sorted(cand_tuples, key=lambda x: x['recall'], reverse=True)
-    # cand_tuples = sorted(cand_tuples, key=lambda x: x['overall'], reverse=True)
-    # 保留前 nr_cand 位，其余淘汰
-    nr_cand = params['nr_cand']
-    # cand_tuples = cand_tuples if len(cand_tuples) <= nr_cand else cand_tuples[:nr_cand]
-
-    if not silent:
-        for t in cand_tuples:
-            print(f'''❇️ recall: {t["recall"]:.2f} cs: {t["cosine"]:.2f} f1: {t["overall"]: .2f}
-❇️ accuracy: {t["accuracy"]:.2f}
-🛑 - {t["content"]}''')
-
-    if len(cand_tuples) == 0:
-        if not silent:
-            print('No candidates found')
-        return candidates[:min(len(candidates), nr_cand)]
-
-    return list(map(lambda x: x['content'], cand_tuples))
+    return cand_tuples

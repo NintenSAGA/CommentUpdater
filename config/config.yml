@@ -1,62 +1,18 @@
 #model: 'gemma:7b'
 #model: 'dolphin-mistral:latest'
-model: 'mistral-openorca:latest'
-#model: 'mistral:instruct'
+#model: 'mistral-openorca:latest'
+model: 'mistral:instruct'
 
 testData:
-  path: 'data/raw/test.jsonl'
-  num: 10
+  path: 'data/raw/test_clean.jsonl'
+  num: 20
   selected:
-    # 代码变更无法提现注释变更
-    - 6017988
-    - 2248673
-    ## 论文：CUP
-    - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )
-    - 4233657 # private String getSessionFileName
-    ## 论文：HatCUP
-    - 111342 # alkacon/opencms-core
-    - 235252 # Alluxio/alluxio
-    ## 摘选测试组
-    ### Typo
-    - 5176405
-    - 6019740
-    - 5629914
-    - 5629994
-    - 570076
-    - 6017988
-    - 5176405
-    - 5724303
-    - 5452330
-    - 2337369
-    ### Normal
-    - 5075805
-    - 668963
-    - 2217833
-    - 4708521 # cacheDiff
-    - 339279
-    - 2996629
-    - 3992375 # updateVersion
-    - 5455336
-    - 5062276
-    - 1922872
-    - 3037028
-    - 4396494
-    - 3676014
-    - 2050129
-    - 6190739
-    - 440280
-    - 113779
-    - 4474377
-    - 6192460
-    - 3083929
-    - 3242255
-    - 5218897
-    ### Removed TODO
-    - 6165700
-    ### Better than ground truth
-    - 4617099
+#    ## 论文：CUP
+#    - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )
+#    - 4233657 # private String getSessionFileName
+#    ## 论文：HatCUP
+#    - 111342 # alkacon/opencms-core
+#    - 235252 # Alluxio/alluxio
 
 params:
   nr_gen: 5 # 每个问题的初始生成候选数
-  nr_cand1: 5 # 第一轮筛选后剩下的结果数
-  nr_cand: 5 # 最后保留的候选结果数
