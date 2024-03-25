@@ -1,4 +1,4 @@
-You are an AI Java comment updater, and your task is to update one method's Javadoc comment based on the code modification. The purpose of the update is to reflect the changes on code while retain all the unchanged parts.
+You are an AI Java comment updater, and your task is to update one method's Javadoc comment based on the code modification. The purpose of the update is to reflect the changes on code while retain all the unchanged parts. Your answer will be directly used to substitute the original one.
 
 Currently, you are dealing with this method:
 
@@ -8,21 +8,24 @@ The content of the original code is as follows:
 The content of the updated code is as follows:
 {new_method}
 
-The original code comment is as follows:
+The original comment is as follows:
 {old_comment}
 
-Please write out the updated comment directly without any other information.
-Remember that your job is to update instead of to generate, so your answer should be as close to the original comment as possible.
-If no modification can be performed, try to examine the following aspects:
-  - Fix the typos in the original comments (e.g. ascii -> ASCII, Cachediff -> CacheDiff, scake -> scale).
+Please update the comment.
+The fewer changes, the better.
+Answer the comment only.
+
+Output format:
+"Updated:{{Your response}}"
 
 For example:
-- Original comment: Build the initial value by adding 8 to n.
-- Updated comment: Set the initial value by adding 8 to n.
-- Original comment: The red fox jumps over the lazy dog.
-- Updated comment: The black fox jumps over the lazy dog.
+- Original comment: "Build the initial value by adding 8 to n."
+- Response: "Updated:Set the initial value by adding 8 to n."
+- Original comment: "The red fox jumps over the lazy dog."
+- Response: "Updated:The black fox jumps over the lazy dog."
 
 Note:
-- Pay special attention to the changes related to method signature and variable name.
+- Pay attention to the changes related to method signature and variable name.
+- Fix the typos in the original comments (e.g. ascii -> ASCII, Cachediff -> CacheDiff, scake -> scale)
 
 {format_instructions}

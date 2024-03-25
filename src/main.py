@@ -34,7 +34,6 @@ if __name__ == '__main__':
 
     result_file_name = f'result-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
     with jsonlines.open(PATH) as reader:
-        # with jsonlines.open(f'../data/results/{result_file_name}', mode='w') as writer:
         for parsed in reader:
             _sample_id = parsed['sample_id']
             if SELECTED is not None and len(SELECTED) != 0:
@@ -64,10 +63,8 @@ if __name__ == '__main__':
                 candidates=list(_candidates), src_javadoc=_old_comment, params=params, exp_javadoc=_exp_comment)
 
             for cand in _n_candidates:
-                print(f'''
-🔸ED: {cand['ed']:.2f} 🔸RED: {cand['red']:.3f} 🔸GLEU: {cand['gleu']:.1f} 🔸METEOR: {cand['meteor']:.1f}
-🔹{cand['content']}
-                ''')
+                print(f'''🔸ED: {cand['ed']:.2f} RED: {cand['red']:.3f} GLEU: {cand['gleu']:.1f} METEOR: {cand['meteor']:.1f}
+{cand['content']}''')
 
             output_dict = {
                 'sample_id': parsed['sample_id'],
