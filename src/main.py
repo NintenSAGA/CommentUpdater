@@ -4,8 +4,8 @@ import pathlib
 import jsonlines
 import yaml
 from dotenv import load_dotenv
+from rich.progress import Progress
 
-from algo import calc_and_filter
 from llm import Model
 
 WORK_DIR = pathlib.Path(__file__).parent.parent.resolve()
@@ -24,7 +24,7 @@ def result_preprocess(result: str):
     return result
 
 
-if __name__ == '__main__':
+def generate_candidates(result_path: pathlib.Path) -> pathlib.Path:
     with open((CONFIG_DIR / 'config.yml'), 'r') as file:
         config = yaml.safe_load(file)
     test_data = config['testData']
@@ -32,59 +32,63 @@ if __name__ == '__main__':
 
     # myModel = Model('mistral-openorca')
     model_name = config['model']
-    myModel = Model(model_name)
+    my_model = Model(model_name)
     print(f'Model: {model_name}')
 
-    NUM = test_data['num']
-    SELECTED = test_data['selected']
-    PATH = test_data['path']
-    PATH = WORK_DIR / PATH
+    num = test_data['num']
+    selected = test_data['selected']
+    path = WORK_DIR / test_data['path']
 
-    nr_line = 0
+    if num < 0:
+        with open(path, mode='r') as f:
+            num = len(f.readlines())
 
-    result_file_name = f'result-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
-    with jsonlines.open(PATH) as reader:
-        for parsed in reader:
-            _sample_id = parsed['sample_id']
-            if SELECTED is not None and len(SELECTED) != 0:
-                if _sample_id not in SELECTED:
-                    continue
-            elif nr_line == NUM:
-                break
+    with Progress() as progress:
+        task = progress.add_task("[green]Generating...", total=num)
+        progress.console.print(f'[green]{num} lines in total.')
+        nr_line = 0
+        with jsonlines.open(path, mode='r') as reader:
+            with jsonlines.open(result_path, mode='w') as writer:
+                for parsed in reader:
+                    try:
+                        _sample_id = parsed['sample_id']
+                        if selected is not None and len(selected) != 0:
+                            if _sample_id not in selected:
+                                continue
+                        elif nr_line == num:
+                            break
 
-            print(f"\n## Case {nr_line + 1} (ID: {_sample_id})")
+                        _old_method = parsed['src_method']
+                        _new_method = parsed['dst_method']
+                        _old_comment = parsed['src_desc']
+                        _exp_comment = parsed['dst_desc']
 
-            nr_line += 1
-            _old_method = parsed['src_method']
-            _new_method = parsed['dst_method']
-            _old_comment = parsed['src_desc']
-            _exp_comment = parsed['dst_desc']
+                        _n = params['nr_gen']
+                        _candidates = []
+                        for i in range(_n):
+                            _result = my_model.resolve(_old_method, _new_method, _old_comment)
+                            _result = result_preprocess(_result)
 
-            print(f'1️⃣Original: {_old_comment}')
-            print(f'1️⃣Expected: {_exp_comment}')
+                            _candidates.append(_result)
 
-            _n = params['nr_gen']
-            _candidates = set()
-            for i in range(_n):
-                _result = myModel.resolve(_old_method, _new_method, _old_comment)
-                _result = result_preprocess(_result)
+                        output_dict = {
+                            'SampleId': parsed['sample_id'],
+                            'Origin': _old_comment,
+                            'Reference': _exp_comment,
+                            'LLMCandidates': _candidates
+                        }
 
-                _candidates.add(_result)
+                        writer.write(output_dict)
+                    except Exception as e:
+                        progress.console.print(f'Error on line {nr_line}. Error: {e}')
 
-            _n_candidates = calc_and_filter(
-                candidates=list(_candidates), src_javadoc=_old_comment, params=params, exp_javadoc=_exp_comment)
+                    progress.update(task, advance=1)
+                    nr_line += 1
+    return result_path
 
-            for cand in _n_candidates:
-                print(
-                    f'''🔸ED: {cand['ed']:.2f} RED: {cand['red']:.3f} GLEU: {cand['gleu']:.1f} METEOR: {cand['meteor']:.1f}
-{cand['content']}''')
 
-            output_dict = {
-                'sample_id': parsed['sample_id'],
-                'full_name': parsed['full_name'],
-                'commit_id': parsed['commit_id'],
-                'src_method': _old_method,
-                'dst_method': _new_method,
-                'src_desc': _old_comment,
-                'dst_desc': _exp_comment,
-            }
+if __name__ == '__main__':
+    result_file_name = f'candidates-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
+    result_fp = WORK_DIR / 'result' / 'candidates' / result_file_name
+    result_fp = generate_candidates(result_fp)
+    print(result_fp)
