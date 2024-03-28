@@ -5,7 +5,7 @@ model: 'mistral-openorca:latest'
 
 testData:
   path: 'data/raw/test_clean.jsonl'
-  num: 20
+  num: 10
   selected:
 #    ## 论文：CUP
 #    - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )

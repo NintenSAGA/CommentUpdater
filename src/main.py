@@ -1,18 +1,28 @@
 import datetime
-import json
 import pathlib
 
 import jsonlines
 import yaml
+from dotenv import load_dotenv
 
 from algo import calc_and_filter
 from llm import Model
-from dotenv import load_dotenv
 
 WORK_DIR = pathlib.Path(__file__).parent.parent.resolve()
 CONFIG_DIR = WORK_DIR / 'config'
 
 load_dotenv()
+
+
+def result_preprocess(result: str):
+    result = result.replace('<|im_end|>', '')
+    result = result.replace("Updated:", '')
+    result = result.strip().strip("'").strip('"').strip()
+    result = result.lstrip('{').rstrip('}')
+
+    result = result.strip()
+    return result
+
 
 if __name__ == '__main__':
     with open((CONFIG_DIR / 'config.yml'), 'r') as file:
@@ -56,14 +66,17 @@ if __name__ == '__main__':
             _n = params['nr_gen']
             _candidates = set()
             for i in range(_n):
-                result = myModel.resolve(_old_method, _new_method, _old_comment)
-                result = result.rstrip('<|im_end|>')
-                _candidates.add(result)
+                _result = myModel.resolve(_old_method, _new_method, _old_comment)
+                _result = result_preprocess(_result)
+
+                _candidates.add(_result)
+
             _n_candidates = calc_and_filter(
                 candidates=list(_candidates), src_javadoc=_old_comment, params=params, exp_javadoc=_exp_comment)
 
             for cand in _n_candidates:
-                print(f'''🔸ED: {cand['ed']:.2f} RED: {cand['red']:.3f} GLEU: {cand['gleu']:.1f} METEOR: {cand['meteor']:.1f}
+                print(
+                    f'''🔸ED: {cand['ed']:.2f} RED: {cand['red']:.3f} GLEU: {cand['gleu']:.1f} METEOR: {cand['meteor']:.1f}
 {cand['content']}''')
 
             output_dict = {
