@@ -2,11 +2,9 @@ import difflib
 import re
 
 import javalang
-import nltk.translate.gleu_score
 import rouge
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from nltk.metrics import edit_distance
 
 
 def calculate_diff(original: str, updated: str):
@@ -93,22 +91,3 @@ def calculate_coverage_ratio(word_set, sentence):
     return coverage_ratio
 
 
-def calc_and_filter(candidates, src_javadoc, params: dict, exp_javadoc=None, silent=False):
-    cand_tuples = []
-    for hyp in candidates:
-        data = {
-            'content': hyp,
-        }
-        if exp_javadoc is not None:
-            # Edit distance
-            data['ed'] = edit_distance(exp_javadoc.split(), hyp.split())
-            # Relative edit distance
-            data['red'] = data['ed'] / edit_distance(exp_javadoc.split(), src_javadoc.split())
-            # GLEU metric
-            data['gleu'] = 100 * nltk.translate.gleu_score.sentence_gleu([exp_javadoc.split()], hyp.split())
-            # METEOR metric
-            data['meteor'] = 100 * nltk.translate.meteor_score.single_meteor_score(exp_javadoc.split(), hyp.split())
-
-        cand_tuples.append(data)
-
-    return cand_tuples
