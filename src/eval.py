@@ -1,8 +1,14 @@
 import pathlib
+import string
 
 import jsonlines
 import nltk.translate
 from nltk import edit_distance, word_tokenize
+
+
+def tokenize(s: str):
+    s = s.strip(string.punctuation)
+    return s.split()
 
 
 def evaluate_each(candidates, origin, reference, params=None):
@@ -12,14 +18,18 @@ def evaluate_each(candidates, origin, reference, params=None):
             'content': hyp,
         }
         if reference is not None:
-            tokenized_ref = word_tokenize(reference)
-            tokenized_hyp = word_tokenize(hyp)
-            tokenized_origin = word_tokenize(origin)
+            tokenized_ref = tokenize(reference)
+            tokenized_hyp = tokenize(hyp)
+            tokenized_origin = tokenize(origin)
 
             # Edit distance
             data['ed'] = edit_distance(tokenized_ref, tokenized_hyp)
             # Relative edit distance
-            data['red'] = data['ed'] / edit_distance(tokenized_ref, tokenized_origin)
+            ed1 = edit_distance(tokenized_ref, tokenized_origin)
+            if ed1 == 0:
+                data['red'] = 0
+            else:
+                data['red'] = (data['ed'] / ed1)
             # GLEU metric
             data['gleu'] = 100 * nltk.translate.gleu_score.sentence_gleu([tokenized_ref], tokenized_hyp)
             # METEOR metric
