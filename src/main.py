@@ -32,7 +32,11 @@ def generate_candidates(result_path: pathlib.Path) -> pathlib.Path:
 
     # myModel = Model('mistral-openorca')
     model_name = config['model']
-    my_model = Model(model_name)
+    if 'rag_src' in config:
+        rag_src = WORK_DIR / config['rag_src']
+    else:
+        rag_src = None
+    my_model = Model(model_name, rag_src)
     print(f'Model: {model_name}')
 
     num = test_data['num']
