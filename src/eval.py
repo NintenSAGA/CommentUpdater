@@ -15,6 +15,7 @@ def evaluate_each(candidates, origin, reference, params=None):
     cand_tuples = []
     for hyp in candidates:
         data = {
+            'origin': origin,
             'content': hyp,
         }
         if reference is not None:
