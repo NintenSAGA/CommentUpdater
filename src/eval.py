@@ -3,6 +3,7 @@ import string
 
 import jsonlines
 import nltk.translate
+import rouge
 from nltk import edit_distance, word_tokenize
 
 
@@ -35,6 +36,17 @@ def evaluate_each(candidates, origin, reference, params=None):
             data['gleu'] = 100 * nltk.translate.gleu_score.sentence_gleu([tokenized_ref], tokenized_hyp)
             # METEOR metric
             data['meteor'] = 100 * nltk.translate.meteor_score.meteor_score([tokenized_ref], tokenized_hyp)
+            # ROUGE
+            r = rouge.Rouge()
+            try:
+                r_score = r.get_scores(hyps=string.whitespace.join(tokenized_hyp),
+                                       refs=string.whitespace.join(tokenized_ref))
+                rl_score = r_score[0]['rouge-l']
+                data['rouge-recall'] = 100 * rl_score['r']
+                data['rouge-f1'] = 100 * rl_score['f']
+            except ValueError:
+                data['rouge-recall'] = 100
+                data['rouge-f1'] = 100 if len(tokenized_hyp) == 0 else 0
 
         cand_tuples.append(data)
 
