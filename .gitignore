@@ -9,3 +9,5 @@
 /data/results/*
 
 /logs/
+
+!/data/raw/test_clean.jsonl
