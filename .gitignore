@@ -3,8 +3,8 @@
 
 .env
 
-/data/raw/
-/data/processed/
+/data/raw/*
+/data/processed/*
 
 /data/results/*
 
