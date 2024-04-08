@@ -1,13 +1,13 @@
-#model: 'gemma:7b'
+model: 'gemma:7b'
 #model: 'dolphin-mistral:latest'
-model: 'mistral-openorca:latest'
+#model: 'mistral-openorca:latest'
 #model: 'mistral:instruct'
 
 #rag_src: 'data/processed/train_clean.jsonl'
 
 testData:
   path: 'data/raw/test_clean.jsonl'
-  num: -1
+  num: 1000
   selected:
 #    ## 论文：CUP
 #    - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )
