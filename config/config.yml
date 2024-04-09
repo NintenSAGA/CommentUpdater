@@ -5,8 +5,8 @@
 #model: 'llama2:7b'
 #model: qwen:7b
 #model: deepseek-coder:6.7b
-#model: solar:latest
-model: openhermes:7b-v2.5
+model: solar:10.7b
+#model: openhermes:7b-v2.5
 
 #rag_src: 'data/processed/train_clean.jsonl'
 
