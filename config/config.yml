@@ -1,10 +1,12 @@
 #model: 'gemma:7b'
 #model: 'dolphin-mistral:latest'
 #model: 'mistral-openorca:latest'
-model: 'mistral:instruct'
+#model: 'mistral:instruct'
 #model: 'llama2:7b'
 #model: qwen:7b
 #model: deepseek-coder:6.7b
+#model: solar:latest
+model: openhermes:7b-v2.5
 
 #rag_src: 'data/processed/train_clean.jsonl'
 
