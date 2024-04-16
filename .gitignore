@@ -11,3 +11,4 @@
 /logs/
 
 !/data/raw/test_clean.jsonl
+/result/result.db

@@ -5,6 +5,10 @@ from nltk import edit_distance
 from eval import tokenize
 
 
+def get_first_candidates(l: list, sorter) -> list:
+    return list(map(lambda x: sorter(x)[0], l))
+
+
 def sort_by_evaluation_metric(candidates: list, metric_name: str, reverse: bool) -> list:
     return sorted(candidates, key=lambda cand: cand[metric_name], reverse=reverse)
 
