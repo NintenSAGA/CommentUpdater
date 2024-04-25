@@ -5,14 +5,17 @@
 #model: 'llama2:7b'
 #model: qwen:7b
 #model: deepseek-coder:6.7b
-model: solar:10.7b
+#model: solar:10.7b
 #model: openhermes:7b-v2.5
+model: llama3:instruct
+#model: wizardlm2:7b
+#model: phi3:3.8b
 
 #rag_src: 'data/processed/train_clean.jsonl'
 
 testData:
   path: 'data/raw/test_clean.jsonl'
-  num: 1000
+  num: 1
   selected:
 #    ## 论文：CUP
 #    - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )

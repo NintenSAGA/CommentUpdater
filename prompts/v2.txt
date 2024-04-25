@@ -27,5 +27,3 @@ For example:
 Note:
 - Pay attention to the changes related to method signature and variable name.
 - Fix the typos in the original comments (e.g. ascii -> ASCII, Cachediff -> CacheDiff, scake -> scale)
-
-{format_instructions}

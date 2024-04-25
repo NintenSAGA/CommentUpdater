@@ -19,19 +19,12 @@ PROMPTS_DIR = WORK_DIR / 'prompts'
 class Model:
     def __init__(self, model_type, rag_src=None):
         self.model = Ollama(model=model_type)
-        self.response_schemas = [
-            ResponseSchema(name="newComment", description="the new comment"),
-        ]
-        self.output_parser = StructuredOutputParser.from_response_schemas(self.response_schemas)
-        self.format_instructions = self.output_parser.get_format_instructions()
 
         with open(PROMPTS_DIR / 'v2.txt', 'r') as f:
             template = os.linesep.join(f.readlines())
-
         self.prompt = PromptTemplate(
             template=template,
             input_variables=["old_method", "old_comment", "new_method"],
-            partial_variables={"format_instructions": ''},
         )
 
         if rag_src is None:
