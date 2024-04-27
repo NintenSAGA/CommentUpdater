@@ -15,7 +15,7 @@ model: llama3:instruct
 
 testData:
   path: 'data/raw/test_clean.jsonl'
-  num: 1000
+  num: -1
   selected:
 #    ## 论文：CUP
 #    - 6104728 # @NativeType (" shaderc_spvc_compiler_t " )
