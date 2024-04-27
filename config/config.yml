@@ -8,7 +8,7 @@
 #model: solar:10.7b
 #model: openhermes:7b-v2.5
 # model: llama3:instruct
-model: llama3-temp1.0:instruct
+model: llama3-temp0.5:instruct
 #model: wizardlm2:7b
 #model: phi3:3.8b
 
