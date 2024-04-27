@@ -34,7 +34,7 @@ with jsonlines.open('../data/raw/test_clean.jsonl') as reader:
 cur.executemany('INSERT INTO TestData VALUES(?, ?, ?, ?, ?, ?, ?, ?)', data1_)
 con.commit()
 
-llm_result_ = eval.evaluate('../result/candidates/candidates-20240407_154640.jsonl')  # openorca
+llm_result_ = eval.evaluate('../result/candidates/candidates-mistral-openorca-latest-9204-20240407_154640.jsonl')  # openorca
 llm_top_result_ = sorter.get_first_candidates(llm_result_, lambda x: sorter.sort_by_evaluation_metric(x, 'gleu', True))
 cup_result = eval.evaluate('../result/baseline/CUP.jsonl', 'CUP')
 hebcup_result = eval.evaluate('../result/baseline/HebCup.jsonl', 'HebCup')

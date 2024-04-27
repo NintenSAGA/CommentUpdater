@@ -24,7 +24,7 @@ def result_preprocess(result: str):
     return result
 
 
-def generate_candidates(result_path: pathlib.Path) -> pathlib.Path:
+def generate_candidates() -> pathlib.Path:
     with open((CONFIG_DIR / 'config.yml'), 'r') as file:
         config = yaml.safe_load(file)
     test_data = config['testData']
@@ -46,6 +46,9 @@ def generate_candidates(result_path: pathlib.Path) -> pathlib.Path:
     if num < 0:
         with open(path, mode='r') as f:
             num = len(f.readlines())
+
+    result_file_name = f'candidates-{model_name.replace(":", "-")}-{num}-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
+    result_path = WORK_DIR / 'result' / 'candidates' / result_file_name
 
     with Progress() as progress:
         task = progress.add_task("[green]Generating...", total=num)
@@ -92,7 +95,5 @@ def generate_candidates(result_path: pathlib.Path) -> pathlib.Path:
 
 
 if __name__ == '__main__':
-    result_file_name = f'candidates-{datetime.datetime.now().strftime("%Y%m%d_%H%M%S")}.jsonl'
-    result_fp = WORK_DIR / 'result' / 'candidates' / result_file_name
-    result_fp = generate_candidates(result_fp)
+    result_fp = generate_candidates()
     print(result_fp)
