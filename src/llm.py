@@ -1,50 +1,38 @@
 import os
 import pathlib
 
-from langchain.output_parsers import ResponseSchema, StructuredOutputParser
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import JSONLoader
-from langchain_community.embeddings import OllamaEmbeddings
+import ollama
 from langchain_community.llms.ollama import Ollama
-from langchain_community.vectorstores.chroma import Chroma
 from langchain_core.exceptions import OutputParserException
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_core.runnables import RunnablePassthrough
 
 WORK_DIR = pathlib.Path(__file__).parent.parent.resolve()
 PROMPTS_DIR = WORK_DIR / 'prompts'
 
 
 class Model:
-    def __init__(self, model_type, rag_src=None):
-        self.model = Ollama(model=model_type)
-
+    def __init__(self, model_type):
         with open(PROMPTS_DIR / 'v2.txt', 'r') as f:
-            template = os.linesep.join(f.readlines())
+            self.template = os.linesep.join(f.readlines())
+        self.model_type = model_type
+
+    def resolve(self, old_method, new_method, old_comment):
+        pass
+
+
+class LangChainModel(Model):
+    def __init__(self, model_type):
+        super().__init__(model_type)
+
+        self.model = Ollama(model=model_type)
         self.prompt = PromptTemplate(
-            template=template,
+            template=self.template,
             input_variables=["old_method", "old_comment", "new_method"],
         )
 
-        if rag_src is None:
-            self.retriever = None
-            self.chain = self.prompt | self.model | StrOutputParser()
-        else:
-            loader = JSONLoader(
-                file_path=rag_src,
-                jq_schema='.',
-                text_content=False,
-                json_lines=True)
-            docs = loader.load()
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=0)
-            splits = text_splitter.split_documents(docs)
-            vectorstore = Chroma.from_documents(documents=splits, embedding=OllamaEmbeddings(model=model_type))
-            self.retriever = vectorstore.as_retriever()
-            self.prompt += '\nContext: {context}'
-            self.chain = (
-                self.prompt | self.model | StrOutputParser()
-            )
+        self.retriever = None
+        self.chain = self.prompt | self.model | StrOutputParser()
 
     def resolve(self, old_method, new_method, old_comment):
         while True:
@@ -60,3 +48,23 @@ class Model:
                 return self.chain.invoke(args)
             except OutputParserException as e:
                 print(e)
+
+
+class OllamaModel(Model):
+    def __init__(self, model_type, rag_src=None):
+        super().__init__(model_type)
+
+    def resolve(self, old_method, new_method, old_comment):
+        prompt = self.template.format(
+            old_comment=old_comment,
+            old_method=old_method,
+            new_method=new_method,
+        )
+
+        result = ollama.generate(
+            model=self.model_type,
+            prompt=prompt,
+            stream=False
+        )
+
+        return result['response']

@@ -6,7 +6,7 @@ import yaml
 from dotenv import load_dotenv
 from rich.progress import Progress
 
-from llm import Model
+from llm import Model, LangChainModel, OllamaModel
 
 WORK_DIR = pathlib.Path(__file__).parent.parent.resolve()
 CONFIG_DIR = WORK_DIR / 'config'
@@ -32,11 +32,7 @@ def generate_candidates() -> pathlib.Path:
 
     # myModel = Model('mistral-openorca')
     model_name = config['model']
-    if 'rag_src' in config:
-        rag_src = WORK_DIR / config['rag_src']
-    else:
-        rag_src = None
-    my_model = Model(model_name, rag_src)
+    my_model = OllamaModel(model_name)
     print(f'Model: {model_name}')
 
     num = test_data['num']
